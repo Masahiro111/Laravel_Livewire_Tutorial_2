@@ -408,3 +408,193 @@ public function create()
 +       $this->slug = $process2;
 +   }
 ```
+
+---
+
+ここまで Part2
+
+---
+
+ページネーションを作成していきます。
+
+`app\Http\Livewire\Pages.php` の編集を行います。
+
+```diff
++    public function read()
++    {
++        return Page::paginate(5);
++    }
+
+    public function render()
+    {
++      return view('livewire.pages', [
++          'data' => $this->read(),
++      ]);
+    }
+```
+
+read メソッドを新しく追加しましょう。これは、ページネーションのオブジェクトを返します。
+次に、`resources\views\livewire\pages.blade.php`に Page 情報の一覧を表示するテーブルを書いていきます。
+
+```html
+<div class="p-6">
+    <div class="flex items-center justify-end px-4 pb-6 text-right sm:px-4">
+        <x-jet-button wire:click="createShowModal">
+            {{ __('Create') }}
+        </x-jet-button>
+    </div>
+
+    {{-- The data table --}}
+    <div class="flex flex-col px-4 sm:px-4">
+        <div class=" -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div
+                class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
+            >
+                <div
+                    class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
+                >
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Title
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Link
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Content
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    &nbsp;
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @if ($data->count()) @foreach ($data as $item)
+                            <tr>
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-gray-500"
+                                >
+                                    {{ $item->title }}
+                                </td>
+                                <td
+                                    class=" px-6 py-4 whitespace-nowrap text-gray-500"
+                                >
+                                    {{ $item->slug }}
+                                </td>
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-gray-500"
+                                >
+                                    {{ $item->content }}
+                                </td>
+                                <td
+                                    class=" px-6 py-4 whitespace-nowrap text-gray-500 text-right"
+                                >
+                                    <x-jet-button
+                                        wire:click="updateShowModal({{ $item->id }})"
+                                    >
+                                        {{ __('Update') }}
+                                    </x-jet-button>
+                                    <x-jet-danger-button
+                                        wire:click="deleteShowModal({{ $item->id }})"
+                                    >
+                                        {{ __('Delete') }}
+                                    </x-jet-danger-button>
+                                </td>
+                            </tr>
+                            @endforeach @else
+                            <tr>
+                                <td
+                                    class=" px-6 py-4 whitespace-nowrap text-gray-500 text-right"
+                                    colspan="4"
+                                >
+                                    No Results Found
+                                </td>
+                            </tr>
+                            @endif
+
+                            <!-- More items... -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    ...
+</div>
+```
+
+`app\Http\Livewire\Pages.php` の編集を行います。
+
+```diff
+
+class Pages extends Component
+{
+
+    public $modalFormVisible = false;
++ public $modelId;
+    public $slug;
+    public $title;
+    public $content;
+
++   public function updateShowModal($id)
++   {
++       $this->modelId = $id;
++       $this->modalFormVisible = true;
++       $this->loadModel();
++   }
++
++   /**
++   * モデルデータを読み込みます。
++   * 対象のmodelIdから、目的のデータを探します。
++   * データを取得したら、livewireの変数に入れ込みます。
++   *
++   * @return void
++   */
++   public function loadModel()
++   {
++       $data = Page::find($this->modelId);
++       // dd($data);
++       $this->title = $data->title;
++       $this->slug = $data->slug;
++       $this->content = $data->content;
++   }
+```
+
+\$modelId の変数があるかどうかによっての If 文を作成します。\$modelId がある場合は、ボタンが Update と表示され、wire:click により、update メソッドが実行されます。\$modelId がない場合は、ボタンは Create となり wire:click により create メソッドが実行されます。
+
+`resources\views\livewire\pages.blade.php`を編集します。
+
+```html
+<x-slot name="footer">
+    <x-jet-secondary-button
+        wire:click="$toggle('modalFormVisible')"
+        wire:loading.attr="disabled"
+    >
+        {{ __('Cancel') }}
+    </x-jet-secondary-button>
+
+    @if($modelId)
+    <x-jet-button class="ml-2" wire:click="update" wire:loading.attr="disabled">
+        {{ __('Update') }}
+    </x-jet-button>
+    @else
+    <x-jet-button class="ml-2" wire:click="create" wire:loading.attr="disabled">
+        {{ __('Create') }}
+    </x-jet-button>
+    @endif
+</x-slot>
+```

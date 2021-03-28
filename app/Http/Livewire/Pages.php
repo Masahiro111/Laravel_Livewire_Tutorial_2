@@ -10,6 +10,7 @@ class Pages extends Component
 {
 
     public $modalFormVisible = false;
+    public $modelId;
     public $slug;
     public $title;
     public $content;
@@ -49,9 +50,44 @@ class Pages extends Component
         $this->resetVars();
     }
 
+    /**
+     * read
+     *
+     * @return void
+     */
+    public function read()
+    {
+        return Page::paginate(5);
+    }
+
     public function createShowModal()
     {
+        $this->resetVars();
         $this->modalFormVisible = true;
+    }
+
+    public function updateShowModal($id)
+    {
+        $this->resetVars();
+        $this->modelId = $id;
+        $this->modalFormVisible = true;
+        $this->loadModel();
+    }
+
+    /**
+     * モデルデータを読み込みます。
+     * 対象のmodelIdから、目的のデータを探します。
+     * データを取得したら、livewireの変数に入れ込みます。
+     *
+     * @return void
+     */
+    public function loadModel()
+    {
+        $data = Page::find($this->modelId);
+        // dd($data);
+        $this->title = $data->title;
+        $this->slug = $data->slug;
+        $this->content = $data->content;
     }
 
     public function modelData()
@@ -65,6 +101,7 @@ class Pages extends Component
 
     public function resetVars()
     {
+        $this->modelId = null;
         $this->title = null;
         $this->slug = null;
         $this->content = null;
@@ -87,6 +124,8 @@ class Pages extends Component
 
     public function render()
     {
-        return view('livewire.pages');
+        return view('livewire.pages', [
+            'data' => $this->read(),
+        ]);
     }
 }

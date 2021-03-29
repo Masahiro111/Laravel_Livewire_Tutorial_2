@@ -5,11 +5,15 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Page;
 use Illuminate\Validation\Rule;
+use Livewire\WithPagination;
 
 class Pages extends Component
 {
 
+    use WithPagination;
+
     public $modalFormVisible = false;
+    public $modalConfirmDeleteVisible = false;
     public $modelId;
     public $slug;
     public $title;
@@ -24,9 +28,15 @@ class Pages extends Component
     {
         return [
             'title' => 'required',
-            'slug' => ['required', Rule::unique('pages', 'slug')],
+            'slug' => ['required', Rule::unique('pages', 'slug')->ignore($this->modelId)],
             'content' => 'required',
         ];
+    }
+
+    public function mount()
+    {
+        // ページをリロードした後にページネーションをリセットするぺこ。
+        $this->resetPage();
     }
 
     /**
@@ -60,18 +70,42 @@ class Pages extends Component
         return Page::paginate(5);
     }
 
+
+    public function update()
+    {
+        // dd('updating');
+        $this->validate();
+        Page::find($this->modelId)->update($this->modelData());
+        $this->modalFormVisible = false;
+    }
+
+    public function delete()
+    {
+        Page::destroy($this->modelId);
+        $this->modalConfirmDeleteVisible = false;
+        $this->resetPage();
+    }
+
     public function createShowModal()
     {
+        $this->resetValidation();
         $this->resetVars();
         $this->modalFormVisible = true;
     }
 
     public function updateShowModal($id)
     {
+        $this->resetValidation();
         $this->resetVars();
         $this->modelId = $id;
         $this->modalFormVisible = true;
         $this->loadModel();
+    }
+
+    public function deleteShowModal($id)
+    {
+        $this->modelId = $id;
+        $this->modalConfirmDeleteVisible = true;
     }
 
     /**

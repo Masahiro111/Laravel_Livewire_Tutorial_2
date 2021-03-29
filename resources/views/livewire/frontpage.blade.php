@@ -1,3 +1,4 @@
 <div>
-    {{-- If you look to others for fulfillment, you will never truly be fulfilled. --}}
+    <h1>{{ $title }}</h1>
+    <p>{{ $content }}</p>
 </div>

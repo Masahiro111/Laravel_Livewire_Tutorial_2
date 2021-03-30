@@ -931,3 +931,76 @@ class Frontpage extends Component
     <p>{{ $content }}</p>
 </div>
 ```
+
+あたらしいデータベースのカラムを入れるためにマイグレーションファイルを新しく作成するぺこ。
+
+```command
+php artisan make:migration add_set_default_pages_to_pages_table --table=pages
+```
+
+作成されたマイグレーションファイルに以下を追記するぺこ。
+
+```diff
+public function up()
+{
+    Schema::table('pages', function (Blueprint $table) {
++      $table->boolean('is_default_home')->nullable()->after('id');
++      $table->boolean('is_default_not_found')->nullable()->after('is_default_home');
+    });
+}
+```
+
+そしたらしっかり、migrate コマンドをするぺこ～。
+
+```command
+php artisan migrate
+```
+
+`app\Http\Livewire\Pages.php`を編集するぺこ。追加したカラムの情報に対応する変数を設定するぺこ
+
+```diff
+<?php
+
+class Pages extends Component
+{
+
+    use WithPagination;
+
+    public $modalFormVisible = false;
+    public $modalConfirmDeleteVisible = false;
+    public $modelId;
+    public $slug;
+    public $title;
+    public $content;
+
++    public $isSetToDefaultHomePage;
++    public $isSetToDefaultNotFoundPage;
+```
+
+そして、`resources\views\livewire\pages.blade.php`の content 部分を編集するぺこ。
+
+```diff
+        <x-slot name="content">
+
+            ...
+
++         <div class="mt-4">
++             <label>
++                 <input class="form-checkbox" type="checkbox" value="{{ $isSetToDefaultHomePage }}"
++                     wire:model="isSetToDefaultHomePage">
++                 <span class="ml-2 text-sm text-gray-600">Set as the default home page</span>
++             </label>
++         </div>
+
++         <div class="mt-4">
++             <label>
++                 <input class="form-checkbox" type="checkbox" value="{{ $isSetToDefaultNotFoundPage }}"
++                     wire:model="isSetToDefaultNotFoundPage">
++                 <span class="ml-2 text-sm text-red-600">Set as the default 404 page</span>
++             </label>
++         </div>
+```
+
+```
+
+```

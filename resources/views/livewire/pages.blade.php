@@ -40,6 +40,13 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-gray-500">
                                     {{ $item->title }}
+                                    {!! $item->is_default_home ? '<span
+                                        class="text-green-400 text-xs font-bold">[Default Home]</span>' :
+                                    '' !!}
+                                    {!! $item->is_default_not_found ? '<span class="text-red-400 text-xs font-bold">[404
+                                        page]</span>' :
+                                    '' !!}
+
                                 </td>
                                 <td class=" px-6 py-4 whitespace-nowrap text-gray-500">
                                     <a href="{{ URL::to('/' . $item->slug)}}" target="_blank"
@@ -111,6 +118,22 @@
                 @enderror
             </div>
             <input wire:model="slug">
+
+            <div class="mt-4">
+                <label>
+                    <input class="form-checkbox" type="checkbox" value="{{ $isSetToDefaultHomePage }}"
+                        wire:model="isSetToDefaultHomePage">
+                    <span class="ml-2 text-sm text-gray-600">Set as the default home page</span>
+                </label>
+            </div>
+
+            <div class="mt-4">
+                <label>
+                    <input class="form-checkbox" type="checkbox" value="{{ $isSetToDefaultNotFoundPage }}"
+                        wire:model="isSetToDefaultNotFoundPage">
+                    <span class="ml-2 text-sm text-red-600">Set as the default 404 page</span>
+                </label>
+            </div>
 
             <div class="my-4">
                 <x-jet-label for="content" value="{{ __('Content') }}" />

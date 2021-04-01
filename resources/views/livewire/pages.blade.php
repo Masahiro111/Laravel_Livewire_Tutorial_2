@@ -55,7 +55,7 @@
                                     </a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-gray-500">
-                                    {{ $item->content }}
+                                    {{ Str::limit($item->content , 50, '...') }}
                                 </td>
                                 <td class=" px-6 py-4 whitespace-nowrap text-gray-500 text-right">
                                     <x-jet-button wire:click="updateShowModal({{ $item->id }})">

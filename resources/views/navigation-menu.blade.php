@@ -20,7 +20,7 @@
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('navigation-menus') }}"
                         :active="request()->routeIs('navigation-menus')">
-                        {{ __('navigations') }}
+                        {{ __('Navigations') }}
                     </x-jet-nav-link>
                 </div>
             </div>

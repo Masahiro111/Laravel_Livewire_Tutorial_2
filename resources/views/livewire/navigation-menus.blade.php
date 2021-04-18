@@ -1,3 +1,3 @@
 <div>
-    {{-- Be like water. --}}
+    Livewire component for navigation menus
 </div>

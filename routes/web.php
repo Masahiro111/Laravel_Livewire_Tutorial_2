@@ -26,7 +26,6 @@ Route::get('/', function () {
 Route::group(['middleware' => [
     'auth:sanctum',
     'verified',
-    'accessrole',
 ]], function () {
 
     Route::get('/dashboard', function () {

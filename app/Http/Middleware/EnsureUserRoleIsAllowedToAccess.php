@@ -38,10 +38,6 @@ class EnsureUserRoleIsAllowedToAccess
         return [
             'user' => [
                 'dashboard',
-                'pages',
-                'navigation-menus',
-                'users',
-                'user-permissions'
             ],
             'admin' => [
                 'pages',

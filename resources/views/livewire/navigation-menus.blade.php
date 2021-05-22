@@ -17,7 +17,7 @@
                             <tr>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Label
+                                    Title
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -29,11 +29,11 @@
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Slug
+                                    Label
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    &nbsp;
+                                    Url
                                 </th>
                             </tr>
                         </thead>
@@ -41,21 +41,13 @@
                             @if ($data->count())
                             @foreach ($data as $item)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{ $item->type }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{ $item->sequence }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{ $item->label }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-500">
-                                    <a href="{{ url($item->slug) }}"
-                                        class="text-indigo-600 hover:text-indigo-900 underline"
-                                        target="_blank">{{ $item->slug }}</a></td>
-                                <td class=" px-6 py-4 whitespace-nowrap text-gray-500 text-right">
-                                    <x-jet-button wire:click="updateShowModal({{ $item->id }})">
-                                        {{ __('Update') }}
-                                    </x-jet-button>
-                                    <x-jet-danger-button wire:click="deleteShowModal({{ $item->id }})">
-                                        {{ __('Delete') }}
-                                    </x-jet-danger-button>
-                                </td>
+                                <td class="px-6 py-2">{{ $item->type }}</td>
+                                <td class="px-6 py-2">{{ $item->sequence }}</td>
+                                <td class="px-6 py-2">
+                                    <a href="{{ url($item->slug) }}" class="text-indigo-600 hover:text-indigo-900"
+                                        target="_blank"></a>{{ $item->slug }}</td>
+                                <td class="px-6 py-2">{{ $item->type }}</td>
+                                <td class="px-6 py-2">{{ $item->type }}</td>
                             </tr>
 
                             @endforeach
@@ -74,62 +66,17 @@
                 </div>
             </div>
         </div>
-        <div class="pt-8">
-            {{ $data->links() }}
-        </div>
+
     </div>
 
 
-
-    {{--  Modal Form  --}}
+    {{-- <!-- Modal Form -- > --}}
     <x-jet-dialog-modal wire:model="modalFormVisible">
         <x-slot name="title">
-            {{ __('Navigation Menu Item') }} {{$modelId}}
+            {{ __('Save Page') }} {{$modelId}}
         </x-slot>
 
         <x-slot name="content">
-            <div class="mt-4">
-                <x-jet-label for="label" value="{{ __('Label') }}" />
-                <x-jet-input wire:model="label" id="label" class="block mt-1 w-full" type="text" />
-                @error('label')
-                <span class="text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="my-4">
-                <x-jet-label for="slug" value="{{ __('Slug') }}" />
-                <div class="mt-1 flex rounded-md shadow-sm">
-                    <span
-                        class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                        http://laravel12.localhost/
-                    </span>
-                    <input type="text" id="slug" wire:model.debounce.800ms="slug"
-                        class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm flex-1 block w-full rounded-r-md">
-                </div>
-                @error('slug')
-                <span class="text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="mt-4">
-                <x-jet-label for="sequence" value="{{ __('sequence') }}" />
-                <x-jet-input wire:model="sequence" id="sequence" class="block mt-1 w-full" type="text" />
-                @error('sequence')
-                <span class="text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="mt-4">
-                <x-jet-label for="type" value="{{ __('Type') }}" />
-                <select wire:model="type"
-                    class="block appearance-none w-full bg-gray-100 border border-gray-200 text-gray-700 mt-2 py-2 px-4 pr-8 round leading-tight focus:outline-none">
-                    <option value="SidebarNav">SidebarNav</option>
-                    <option value="TopNav">TopNav</option>
-                </select>
-                @error('type')
-                <span class="text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
 
         </x-slot>
 

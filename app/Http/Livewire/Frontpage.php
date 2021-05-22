@@ -3,7 +3,6 @@
 namespace App\Http\Livewire;
 
 use App\Models\Page;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Frontpage extends Component
@@ -36,30 +35,8 @@ class Frontpage extends Component
         $this->content = $data->content;
     }
 
-    public function sideBarLinks()
-    {
-        return DB::table('navigation_menus')
-            ->where('type', '=', 'SidebarNav')
-            ->orderBy('sequence', 'asc')
-            ->orderBy('created_at', 'asc')
-            ->get();
-    }
-
-    public function topNavLinks()
-    {
-        return DB::table('navigation_menus')
-            ->where('type', '=', 'topNav')
-            ->orderBy('sequence', 'asc')
-            ->orderBy('created_at', 'asc')
-            ->get();
-    }
-
-
     public function render()
     {
-        return view('livewire.frontpage', [
-            'sideBarLinks' => $this->sideBarLinks(),
-            'topNavLinks' => $this->topNavLinks(),
-        ])->layout('layouts.frontpage');
+        return view('livewire.frontpage')->layout('layouts.frontpage');
     }
 }
